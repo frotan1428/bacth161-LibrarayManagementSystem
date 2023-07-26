@@ -6,6 +6,8 @@ import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -46,4 +48,41 @@ public class TeacherService {
         teacherRepository.delete(teacher);
 
     }
+
+    public List<Teacher> getTeacherByLastName(String lastName) {
+
+        return teacherRepository.findByLastName(lastName);
+
+    }
+
+    //1- we need check the teacher is exist
+    //2- check email
+
+    public void updateTeacherById(Long id, Teacher teacher) {
+
+        Teacher  existTeacher = getTeacherById(id);
+
+        //frotan@1234.com           //frotan@1234.com
+        if (!existTeacher.getEmail().equals(teacher.getEmail())){
+            Teacher teacherWithUpdateEmail = teacherRepository.findByEmail(teacher.getEmail());
+            if (teacherWithUpdateEmail!=null){
+                throw  new ConflictException("email already is exist for another teacher .");
+            }
+
+        }
+
+        existTeacher.setName(teacher.getName());
+        existTeacher.setLastName(teacher.getLastName());
+        existTeacher.setEmail(teacher.getEmail());
+        existTeacher.setPhoneNumber(teacher.getPhoneNumber());
+        existTeacher.setBooks(teacher.getBooks());
+
+        teacherRepository.save(existTeacher);
+    }
+
+
+    public Page<Teacher> getTeacherWithPage(Pageable pageable) {
+       return teacherRepository.findAll(pageable);
+    }
+
 }

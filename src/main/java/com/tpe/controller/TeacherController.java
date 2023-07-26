@@ -3,6 +3,10 @@ package com.tpe.controller;
 import com.tpe.domain.Teacher;
 import com.tpe.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -64,6 +68,48 @@ public class TeacherController {
         teacherService.deleteTeacherById(id);
         String message="Teacher with id "+ id + " has been deleted ";
         return new ResponseEntity<>(message ,HttpStatus.OK);
+
+    }
+
+    @GetMapping("/query")////http://localhost:8080/teachers/query?id=1
+    public ResponseEntity<Teacher> findTeacherByIdWIthParam(@RequestParam Long id){
+      Teacher teacher =  teacherService.getTeacherById(id);
+      return new ResponseEntity<>(teacher,HttpStatus.OK);
+
+    }
+
+    // find the teacher by lastName
+
+    @GetMapping("/byLastName")//http://localhost:8080/teacher/byLastName?lastName="Ali"
+    public ResponseEntity<List<Teacher>>  getTeacherByLastName(@RequestParam String lastName){
+
+      List<Teacher> teachers=  teacherService.getTeacherByLastName(lastName);
+      return new ResponseEntity<>(teachers,HttpStatus.OK);
+    }
+
+    @PutMapping("/{id}")//http://localhost:8080/teachers/1
+
+    public ResponseEntity<Map<String,String>> updateTeacher(@Valid @PathVariable Long id ,@RequestBody Teacher teacher){
+
+        teacherService.updateTeacherById(id,teacher);
+
+        Map<String,String> map= new HashMap<>();
+        map.put("message","Teacher with id" + id + " has been updated successfully ");
+        map.put("status","True");
+        return ResponseEntity.ok(map);
+    }
+
+    @GetMapping("/page")//http://localhost:8080/teachers/page?page=1&size=3&sort=name&direction=ASC/DESC
+
+    public ResponseEntity<Page<Teacher>> getTeacherByPage(@RequestParam("page") int page,
+                                                          @RequestParam("size") int size,
+                                                          @RequestParam("sort") String  prop,
+                                                          @RequestParam("direction")Sort.Direction direction){
+
+      Pageable pageable = PageRequest.of(page,size,Sort.by(direction,prop));
+
+      Page<Teacher>  pageOfTeachers = teacherService.getTeacherWithPage(pageable);
+      return ResponseEntity.ok(pageOfTeachers);
 
     }
 
