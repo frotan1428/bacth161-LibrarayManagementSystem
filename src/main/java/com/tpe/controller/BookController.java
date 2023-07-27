@@ -65,6 +65,37 @@ public class BookController {
     }
 
 
+    @GetMapping("/query")//http://localhost:8080/books/query?id=1
+    public ResponseEntity<Book> getBookUsingParam(@RequestParam("id") Long id) {
+        Book book = bookService.getBookById(id);
+        return new ResponseEntity<>(book, HttpStatus.OK);
+    }
+
+
+    @GetMapping("/byTitle")//localhost:8080/books/byTitle?title=html
+    public ResponseEntity<List<Book>> getBookByTitle(@RequestParam String title) {
+        List<Book> books = bookService.getBookByTitle(title);
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+
+
+
+    @GetMapping("/page")//http://localhost:8080/books/page?page=0&size=1&sort=title&direction=ASC
+    public ResponseEntity<Page<Book>> getBooksByPage(@RequestParam("page") int page,
+                                                     @RequestParam("size") int size,
+                                                     @RequestParam("sort") String prop,
+                                                     @RequestParam("direction") Sort.Direction direction) {
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, prop));
+
+        Page<Book> pageOfBooks = bookService.getAllBooksWithPage(pageable);
+
+        return ResponseEntity.ok(pageOfBooks);
+    }
+
+
+
 
 
 
