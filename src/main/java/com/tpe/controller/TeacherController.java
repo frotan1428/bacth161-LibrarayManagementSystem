@@ -1,6 +1,7 @@
 package com.tpe.controller;
 
 import com.tpe.domain.Teacher;
+import com.tpe.dto.TeacherDto;
 import com.tpe.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -87,6 +88,7 @@ public class TeacherController {
       return new ResponseEntity<>(teachers,HttpStatus.OK);
     }
 
+    /*
     @PutMapping("/{id}")//http://localhost:8080/teachers/1
 
     public ResponseEntity<Map<String,String>> updateTeacher(@Valid @PathVariable Long id ,@RequestBody Teacher teacher){
@@ -98,6 +100,11 @@ public class TeacherController {
         map.put("status","True");
         return ResponseEntity.ok(map);
     }
+
+
+
+     */
+
 
     @GetMapping("/page")//http://localhost:8080/teachers/page?page=1&size=3&sort=name&direction=ASC/DESC
 
@@ -112,6 +119,34 @@ public class TeacherController {
       return ResponseEntity.ok(pageOfTeachers);
 
     }
+
+    @PutMapping("/{teacherId}")//http://localhost:8080/teachers/1
+
+    public ResponseEntity<Map<String,String>> updateTeacher( @PathVariable Long teacherId ,
+                                                             @Valid @RequestBody TeacherDto teacherDto){
+
+        teacherService.updateTeacherByDto(teacherId,teacherDto);
+        Map<String,String> map= new HashMap<>();
+        map.put("message","Teacher with id" + teacherId + " has been updated successfully ");
+        map.put("status","True");
+        return ResponseEntity.ok(map);
+    }
+
+
+    // get  teacher By Id over   Dto
+
+    @GetMapping("query/dto")////http://localhost:8080/teachers/query/dto?id=1;
+
+    public ResponseEntity<TeacherDto> getTeacherByDto(@RequestParam("id") Long id){
+       TeacherDto teacherDto = teacherService.getTeacherByDto(id);
+       return ResponseEntity.ok(teacherDto);
+
+    }
+
+
+
+
+
 
 
 

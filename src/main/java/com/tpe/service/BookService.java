@@ -1,6 +1,7 @@
 package com.tpe.service;
 
 import com.tpe.domain.Book;
+import com.tpe.dto.BookDto;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.BookRepository;
@@ -45,5 +46,16 @@ public class BookService {
     }
 
 
+    public void updateBookByDto(Long id, BookDto bookDto) {
+        Book existBook= getBookById(id);
+
+        //update the filed  of the exist book with new value
+
+        existBook.setTitle(bookDto.getTitle());
+        existBook.setAuthor(bookDto.getAuthor());
+        existBook.setPublicationDate(bookDto.getPublicationDate());
+        existBook.setAuthor(bookDto.getAuthor());
+        bookRepository.save(existBook);
+    }
 
 }

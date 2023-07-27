@@ -2,6 +2,7 @@ package com.tpe.service;
 
 
 import com.tpe.domain.Teacher;
+import com.tpe.dto.TeacherDto;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
 import com.tpe.repository.TeacherRepository;
@@ -85,4 +86,34 @@ public class TeacherService {
        return teacherRepository.findAll(pageable);
     }
 
+    public void updateTeacherByDto(Long teacherId, TeacherDto teacherDto) {
+
+        Teacher existTeacher = getTeacherById(teacherId);
+
+        if (!existTeacher.getEmail().equals(teacherDto.getEmail())){
+            Teacher teacherWithUpdateEmail = teacherRepository.findByEmail(teacherDto.getEmail());
+            if (teacherWithUpdateEmail!=null){
+                throw  new ConflictException("email already is exist for another teacher .");
+            }
+
+        }
+
+        //update the filed of the existing teacher with new values
+
+        existTeacher.setName(teacherDto.getName());
+        existTeacher.setLastName(teacherDto.getLastName());
+        existTeacher.setEmail(teacherDto.getEmail());
+        existTeacher.setPhoneNumber(teacherDto.getPhoneNumber());
+
+        teacherRepository.save(existTeacher);
+
+
+    }
+
+    public TeacherDto getTeacherByDto(Long id) {
+
+        return teacherRepository.findTeacherByDto(id).orElseThrow(()->
+                new ResourceNotFoundException("Teacher whose id " +id + " not found "));
+
+    }
 }
