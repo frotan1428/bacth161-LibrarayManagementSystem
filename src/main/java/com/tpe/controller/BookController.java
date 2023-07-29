@@ -117,6 +117,16 @@ public class BookController {
         return bookService.addBookForTeacher(teacherId,bookId);
     }
 
+    @GetMapping("/byAuthorUsingJPQL")//http://localhost:8080/books/byAuthorUsingJPQL?author=frotan
+    public ResponseEntity<List<Book>> getBookByAuthorUsingJPQL(@RequestParam String author) {
+        List<Book> books = bookService.getBookByAuthorUsingJPQL(author);
+        return new ResponseEntity<>(books, HttpStatus.OK);
+    }
+
+
+
+
+
 
 
 

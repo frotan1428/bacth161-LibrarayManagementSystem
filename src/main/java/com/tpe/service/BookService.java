@@ -112,4 +112,15 @@ public class BookService {
         return  new ResponseEntity<>(response, HttpStatus.CREATED);//201 (CREATED)
 
     }
+
+    public List<Book> getBookByAuthorUsingJPQL(String author) {
+        List<Book> books = bookRepository.findByAuthorUsingJPQL(author);
+
+        if (books.isEmpty()) {
+            throw new ResourceNotFoundException("No books found with author: " + author);
+        }
+        return books;
+    }
+
+
 }

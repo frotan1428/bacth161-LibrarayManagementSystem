@@ -24,4 +24,8 @@ public interface TeacherRepository  extends JpaRepository<Teacher,Long> {
     @Query("SELECT t FROM Teacher t WHERE t.name=:name")
     List<Teacher> findByNameUsingJPQL(@Param("name") String name);
 
+    @Query(value = "SELECT * FROM tbl_teacher t WHERE s.name =:tName", nativeQuery = true)
+    List<Teacher> findStudentsByGradeWithSQL(@Param("tName") String name);
+
+
 }
