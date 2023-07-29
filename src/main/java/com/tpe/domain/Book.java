@@ -1,5 +1,6 @@
 package com.tpe.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.*;
 
 import javax.persistence.*;
@@ -33,7 +34,8 @@ public class Book {
     @Column(nullable = false)
     private String publicationDate;
 
-    @ManyToMany(mappedBy = "books",cascade = CascadeType.REMOVE)
+    @ManyToMany(mappedBy = "books",cascade = CascadeType.REMOVE,fetch = FetchType.LAZY)
+    @JsonIgnoreProperties("books")
     private List<Teacher> teachers= new ArrayList<>();
 
 

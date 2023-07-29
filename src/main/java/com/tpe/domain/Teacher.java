@@ -44,7 +44,7 @@ public class Teacher {
     private LocalDateTime registerDate = LocalDateTime.now();
 
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "teacher_book",
     joinColumns = @JoinColumn(name = "teacher_id"),
     inverseJoinColumns = @JoinColumn(name = "book_id"))

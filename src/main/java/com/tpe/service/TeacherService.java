@@ -116,4 +116,14 @@ public class TeacherService {
                 new ResourceNotFoundException("Teacher whose id " +id + " not found "));
 
     }
+
+    public List<Teacher> getTeacherByNameUsingJPQL(String name) {
+       //  return teacherRepository.findByNameUsingJPQL(name);
+     List<Teacher> teacher= teacherRepository.findByNameUsingJPQL(name);
+     if (teacher.isEmpty()){
+         throw  new ResourceNotFoundException("No Teacher found with :" +name);
+     }
+     return  teacher;
+
+    }
 }

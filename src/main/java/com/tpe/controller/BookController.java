@@ -108,6 +108,25 @@ public class BookController {
         return ResponseEntity.ok(map);
     }
 
+    @PostMapping("/{teacherId}/books")//http://localhost:8080/books/{teacherId}/books?bookId={bookId} == T 1  and book 2-3
+
+    public ResponseEntity<Map<String,String>> addBookForTeacher(
+            @PathVariable Long teacherId,
+            @RequestParam Long bookId
+    ){
+        return bookService.addBookForTeacher(teacherId,bookId);
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 
 

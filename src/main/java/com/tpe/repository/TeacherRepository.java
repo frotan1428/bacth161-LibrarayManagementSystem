@@ -20,4 +20,8 @@ public interface TeacherRepository  extends JpaRepository<Teacher,Long> {
     @Query("SELECT new com.tpe.dto.TeacherDto (t) FROM Teacher t WHERE t.id=:id")
     Optional<TeacherDto> findTeacherByDto(@Param("id") Long id);
 
+
+    @Query("SELECT t FROM Teacher t WHERE t.name=:name")
+    List<Teacher> findByNameUsingJPQL(@Param("name") String name);
+
 }

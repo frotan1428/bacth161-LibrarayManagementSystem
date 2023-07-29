@@ -1,6 +1,7 @@
 package com.tpe.service;
 
 import com.tpe.domain.Book;
+import com.tpe.domain.Teacher;
 import com.tpe.dto.BookDto;
 import com.tpe.exception.ConflictException;
 import com.tpe.exception.ResourceNotFoundException;
@@ -8,15 +9,24 @@ import com.tpe.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 
 @Service
 public class BookService {
 
     @Autowired
     private BookRepository bookRepository;
+
+    @Autowired
+    private TeacherService teacherService;
 
     public Book saveBook(Book book) {
         return bookRepository.save(book);
@@ -58,4 +68,48 @@ public class BookService {
         bookRepository.save(existBook);
     }
 
+
+    @Transactional
+    public ResponseEntity<Map<String, String>> addBookForTeacher(Long teacherId, Long bookId) {
+
+        //step 1: find teacher by id
+        Teacher teacher= teacherService.getTeacherById(teacherId);
+        //find book By id
+
+        Optional<Book>  optionalBook = bookRepository.findById(bookId);//optional(null)
+        if (optionalBook.isEmpty()){
+            Map<String,String> response= new HashMap<>();
+            response.put("message" ,"Book with id "+bookId+" does not exist");
+            response.put("success","false");
+
+            return  new ResponseEntity<>(response, HttpStatus.NOT_FOUND);//404 (NOT FOUND)
+        }
+
+       Book book = optionalBook.get();
+
+        //step 3 check if the book already exist for th Teacher  t =1 book =1
+
+        boolean bookExist =  teacher.getBooks().stream().anyMatch(b->
+                b.getId().equals(book.getId()));
+        if (bookExist){
+
+            Map<String,String> response= new HashMap<>();
+            response.put("message" ,"Book already for the teacher with   id "+teacherId);
+            response.put("success","false");
+
+            return  new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);//400 (BAD _REQUEST)
+
+        }
+
+        //add the book to the teachers return new response
+        teacher.getBooks().add(book);
+
+
+        Map<String,String> response= new HashMap<>();
+        response.put("message" ,"Book with id "+ bookId+ " has been added for the Teacher with id : " +teacherId);
+        response.put("success","true");
+
+        return  new ResponseEntity<>(response, HttpStatus.CREATED);//201 (CREATED)
+
+    }
 }

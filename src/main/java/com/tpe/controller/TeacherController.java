@@ -140,8 +140,21 @@ public class TeacherController {
     public ResponseEntity<TeacherDto> getTeacherByDto(@RequestParam("id") Long id){
        TeacherDto teacherDto = teacherService.getTeacherByDto(id);
        return ResponseEntity.ok(teacherDto);
-
     }
+
+
+    //get Teacher By name using JPQL
+
+    @GetMapping("/byNameUsingJPQL")//http://localhost:8080/tachers/byNameUsingJPQL?name="Ali"
+    public ResponseEntity<List<Teacher>> getTeacherByNameUsingJPQL(@RequestParam String name){
+
+      List<Teacher> teachers =  teacherService.getTeacherByNameUsingJPQL(name);
+
+      return new ResponseEntity<>(teachers,HttpStatus.OK);
+    }
+
+
+
 
 
 
